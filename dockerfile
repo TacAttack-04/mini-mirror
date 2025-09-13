@@ -15,7 +15,7 @@ RUN pacman -Syu --noconfirm && \
         && pacman -Scc --noconfirm
 
 # Create a non-root user for building packages (AUR packages can't be built as root)
-RUN useradd -m -G wheel -s /bin/bash builder && \
+RUN useradd -m builder && \
     echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # Create mirror directory
