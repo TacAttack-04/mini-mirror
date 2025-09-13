@@ -62,6 +62,7 @@ if [ "$EUID" -eq 0 ]; then
     echo "ERROR: Your user is set to root it must be changed"
     exit 1
 fi
+EOF
 
 # Expose HTTP port
 EXPOSE 8080
