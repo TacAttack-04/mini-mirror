@@ -63,21 +63,6 @@ if [ "$EUID" -eq 0 ]; then
     exit 1
 fi
 
-
-
-# Create startup script
-RUN cat > /start.sh << 'EOF'
-#!/bin/bash
-# Start lighttpd in background
-lighttpd -f /etc/lighttpd/lighttpd.conf -D &
-
-# Switch to builder user and run the AUR build script
-su - builder -c "/home/builder/aur-build-mirror.sh"
-
-# Keep lighttpd running
-wait $LIGHTPD_PID
-EOF
-
 # Expose HTTP port
 EXPOSE 8080
 
