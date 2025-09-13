@@ -73,4 +73,4 @@ USER builder
 WORKDIR /home/builder
 
 # Default command
-ENRTYPOINT ["./aur-build-mirror.sh"]
+ENTRYPOINT ["./aur-build-mirror.sh"]
