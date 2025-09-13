@@ -3,6 +3,9 @@ FROM archlinux:latest
 # Set environment variables
 ENV MIRROR_DIR="/srv/http/mirror"
 ENV MIRROR_NAME="my-aur-mirror"
+ENV UID="1000"
+ENV GID="1000"
+
 
 # Update system and install dependencies
 RUN pacman -Syu --noconfirm && \
@@ -15,7 +18,8 @@ RUN pacman -Syu --noconfirm && \
         && pacman -Scc --noconfirm
 
 # Create a non-root user for building packages (AUR packages can't be built as root)
-RUN useradd -m -G wheel -s /bin/bash builder && \
+RUN groupadd -g "$GID" builder && \
+    useradd -m -u "$UID" -g builder builder && \
     echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # Create mirror directory
@@ -35,42 +39,42 @@ COPY aur-build-mirror.sh /home/builder/aur-build-mirror.sh
 RUN chown builder:builder /home/builder/aur-build-mirror.sh && \
     chmod +x /home/builder/aur-build-mirror.sh
 
-# Fix the script syntax errors and make it work in Docker
-RUN sed -i 's|mkdir -p "MIRROR_DIR"|mkdir -p "$MIRROR_DIR"|' /home/builder/aur-build-mirror.sh && \
-    sed -i 's|if \[ ! -d "/tmp/$package \]; then|if [ ! -d "/tmp/aur-builds/$package" ]; then|' /home/builder/aur-build-mirror.sh && \
-    sed -i 's|git clone "https://aur.archlinux.org/${package}.git" "/tmp/$package"|git clone "https://aur.archlinux.org/${package}.git" "/tmp/aur-builds/$package"|' /home/builder/aur-build-mirror.sh && \
-    sed -i 's|cd "/tmp/$package"|cd "/tmp/aur-builds/$package"|' /home/builder/aur-build-mirror.sh && \
-    sed -i 's|mv \*.pkg.tar.\* "MIRROR_DIR/"|mv *.pkg.tar.* "$MIRROR_DIR/"|' /home/builder/aur-build-mirror.sh
-
 # Configure lighttpd
-RUN echo 'server.modules = ("mod_alias", "mod_dirlisting")' > /etc/lighttpd/lighttpd.conf && \
-    echo 'server.document-root = "/srv/http/mirror"' >> /etc/lighttpd/lighttpd.conf && \
-    echo 'server.port = 8080' >> /etc/lighttpd/lighttpd.conf && \
-    echo 'server.bind = "0.0.0.0"' >> /etc/lighttpd/lighttpd.conf && \
-    echo 'dir-listing.activate = "enable"' >> /etc/lighttpd/lighttpd.conf && \
-    echo 'index-file.names = ( "index.html" )' >> /etc/lighttpd/lighttpd.conf
-
-# Create startup script
-RUN cat > /start.sh << 'EOF'
-#!/bin/bash
-# Start lighttpd in background
-lighttpd -f /etc/lighttpd/lighttpd.conf -D &
-
-# Switch to builder user and run the AUR build script
-su - builder -c "/home/builder/aur-build-mirror.sh"
-
-# Keep lighttpd running
-wait
+RUN cat > /etc/lighttpd/lighttpd.conf << 'EOF'
+server.modules = ("mod_alias", "mod_dirlisting")
+server.document-root = "/srv/http/mirror"
+server.port = 8080
+server.bind = "0.0.0.0"
+dir-listing.activate = "enable"
+index-file.names = ( "index.html" )
+mimetype.assign = (
+  ".tar.xz" => "application/x-xz",
+  ".tar.gz" => "application/gzip",
+  ".pkg.tar.xz" => "application/x-xz",
+  ".pkg.tar.zst" => "application/zstd"
+)
 EOF
 
-RUN chmod +x /start.sh
+RUN cat > /identity-test.sh << 'EOF'
+#!/bin/bash
+set -e
+echo "user: $(whoami)"
+echo "home directory: $HOME"
+ehco "working directory: $(pwd)"
+
+if [ "$EUID" -eq 0 ]; then
+    echo "ERROR: Your user is set to root it must be changed"
+    exit 1
+fi
+EOF
 
 # Expose HTTP port
 EXPOSE 8080
 
 # Switch to builder user for the build process
+RUN chmod 1777 /tmp
 USER builder
 WORKDIR /home/builder
 
 # Default command
-CMD ["sudo", "/start.sh"]
+ENTRYPOINT ["./aur-build-mirror.sh"]

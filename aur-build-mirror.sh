@@ -86,4 +86,6 @@ else
     echo "Warning: No package files found in mirror directory"
 fi
 
+chmod +x /start.sh
+
 echo "AUR mirror build process completed!"
