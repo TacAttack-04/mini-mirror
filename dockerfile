@@ -78,8 +78,6 @@ su - builder -c "/home/builder/aur-build-mirror.sh"
 wait $LIGHTPD_PID
 EOF
 
-RUN chmod +x /start.sh
-
 # Expose HTTP port
 EXPOSE 8080
 
