@@ -35,20 +35,35 @@ COPY aur-build-mirror.sh /home/builder/aur-build-mirror.sh
 RUN chown builder:builder /home/builder/aur-build-mirror.sh && \
     chmod +x /home/builder/aur-build-mirror.sh
 
-# Fix the script syntax errors and make it work in Docker
-RUN sed -i 's|mkdir -p "MIRROR_DIR"|mkdir -p "$MIRROR_DIR"|' /home/builder/aur-build-mirror.sh && \
-    sed -i 's|if \[ ! -d "/tmp/$package \]; then|if [ ! -d "/tmp/aur-builds/$package" ]; then|' /home/builder/aur-build-mirror.sh && \
-    sed -i 's|git clone "https://aur.archlinux.org/${package}.git" "/tmp/$package"|git clone "https://aur.archlinux.org/${package}.git" "/tmp/aur-builds/$package"|' /home/builder/aur-build-mirror.sh && \
-    sed -i 's|cd "/tmp/$package"|cd "/tmp/aur-builds/$package"|' /home/builder/aur-build-mirror.sh && \
-    sed -i 's|mv \*.pkg.tar.\* "MIRROR_DIR/"|mv *.pkg.tar.* "$MIRROR_DIR/"|' /home/builder/aur-build-mirror.sh
-
 # Configure lighttpd
-RUN echo 'server.modules = ("mod_alias", "mod_dirlisting")' > /etc/lighttpd/lighttpd.conf && \
-    echo 'server.document-root = "/srv/http/mirror"' >> /etc/lighttpd/lighttpd.conf && \
-    echo 'server.port = 8080' >> /etc/lighttpd/lighttpd.conf && \
-    echo 'server.bind = "0.0.0.0"' >> /etc/lighttpd/lighttpd.conf && \
-    echo 'dir-listing.activate = "enable"' >> /etc/lighttpd/lighttpd.conf && \
-    echo 'index-file.names = ( "index.html" )' >> /etc/lighttpd/lighttpd.conf
+RUN cat > /etc/lighttpd/lighttpd.conf << 'EOF'
+server.modules = ("mod_alias", "mod_dirlisting")
+server.document-root = "/srv/http/mirror"
+server.port = 8080
+server.bind = "0.0.0.0"
+dir-listing.activate = "enable"
+index-file.names = ( "index.html" )
+mimetype.assign = (
+  ".tar.xz" => "application/x-xz",
+  ".tar.gz" => "application/gzip",
+  ".pkg.tar.xz" => "application/x-xz",
+  ".pkg.tar.zst" => "application/zstd"
+)
+EOF
+
+RUN cat > /identity-test.sh << 'EOF'
+#!/bin/bash
+set -e
+echo "user: $(whoami)"
+echo "home directory: $HOME"
+ehco "working directory: $(pwd)"
+
+if [ "$EUID" -eq 0 ]; then
+    echo "ERROR: Your user is set to root it must be changed"
+    exit 1
+fi
+
+
 
 # Create startup script
 RUN cat > /start.sh << 'EOF'
@@ -60,7 +75,7 @@ lighttpd -f /etc/lighttpd/lighttpd.conf -D &
 su - builder -c "/home/builder/aur-build-mirror.sh"
 
 # Keep lighttpd running
-wait
+wait $LIGHTPD_PID
 EOF
 
 RUN chmod +x /start.sh
