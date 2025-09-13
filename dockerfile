@@ -15,7 +15,8 @@ RUN pacman -Syu --noconfirm && \
         && pacman -Scc --noconfirm
 
 # Create a non-root user for building packages (AUR packages can't be built as root)
-RUN useradd -m builder && \
+RUN groupadd -g 1000 builder && \
+    useradd -m -u 1000 -g builder builder && \
     echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # Create mirror directory
@@ -72,4 +73,4 @@ USER builder
 WORKDIR /home/builder
 
 # Default command
-CMD ["sudo", "/start.sh"]
+ENRTYPOINT ["./aur-build-mirror.sh"]
