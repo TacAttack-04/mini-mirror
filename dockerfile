@@ -3,6 +3,9 @@ FROM archlinux:latest
 # Set environment variables
 ENV MIRROR_DIR="/srv/http/mirror"
 ENV MIRROR_NAME="my-aur-mirror"
+ENV UID="1000"
+ENV GID="1000"
+
 
 # Update system and install dependencies
 RUN pacman -Syu --noconfirm && \
@@ -15,8 +18,8 @@ RUN pacman -Syu --noconfirm && \
         && pacman -Scc --noconfirm
 
 # Create a non-root user for building packages (AUR packages can't be built as root)
-RUN groupadd -g 1000 builder && \
-    useradd -m -u 1000 -g builder builder && \
+RUN groupadd -g "$GID" builder && \
+    useradd -m -u "$UID" -g builder builder && \
     echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # Create mirror directory
@@ -69,6 +72,7 @@ EOF
 EXPOSE 8080
 
 # Switch to builder user for the build process
+RUN chmod 1777 /tmp
 USER builder
 WORKDIR /home/builder
 
