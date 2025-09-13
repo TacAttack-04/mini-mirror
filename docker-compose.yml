@@ -4,7 +4,7 @@ services:
   aur-mirror:
     build: https://github.com/tacattack-04/mini-mirror.git#main
     container_name: aur-mirror-builder
-    USER: builder
+    user: builder
     ports:
       - "8080:8080"
     volumes:
