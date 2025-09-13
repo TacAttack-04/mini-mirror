@@ -2,7 +2,7 @@ version: '0.1'
 
 services:
   aur-mirror:
-    image: TacAttack-04/mini-mirror
+    image: tacattack-04/mini-mirror
     container_name: aur-mirror-builder
     ports:
       - "8080:8080"
