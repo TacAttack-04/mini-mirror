@@ -7,3 +7,4 @@ su - builder -c "/home/builder/aur-build-mirror.sh"
 
 # Keep lighttpd running
 wait $LIGHTPD_PID
+EOL
