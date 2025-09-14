@@ -31,6 +31,11 @@ RUN mkdir -p "$MIRROR_DIR" && \
 RUN mkdir -p /tmp/aur-builds && \
     chown -R builder:builder /tmp/aur-builds
 
+# Create cron directories
+RUN mkdir -p /var/run /var/log /etc && \
+    touch /var/run/crond.pid /etc/crontab && \
+    chown -R builder:builder /var/run /var/log /etc
+
 # Configure lighttpd
 RUN cat > /etc/lighttpd/lighttpd.conf << 'EOF'
 server.modules = ("mod_alias", "mod_dirlisting")
