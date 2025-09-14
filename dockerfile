@@ -54,7 +54,7 @@ EXPOSE 8080
 COPY ./startup/* /home/builder/startup/
 
 # Mod all scripts so they can be used
-RUN chmod +x /home/builder/*.sh
+RUN chmod +x /home/builder/startup/*.sh
 
 # Sets ownership of everything in builder directory to builder
 RUN chown -R builder:builder /home/builder/
