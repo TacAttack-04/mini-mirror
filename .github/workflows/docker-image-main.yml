@@ -1,18 +1,24 @@
-name: Docker Image CI
+name: Auto Deployment
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:
+      - '**' # this will make it run on any push
 
 jobs:
-
-  build:
-
-    runs-on: main
-
+  deploy-main:
+    if: github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, main]
     steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      - uses: actions/checkout@v4
+      - name: Build and Deploy Main
+        run: |
+          docker compose -f docker-compose.yml up --build -d
+  deploy-dev:
+    if: github.ref == 'refs/heads/unstable'
+    runs-on: [self-hosted, dev]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and Deploy Unstable
+        run: |
+          docker compose -f docker-compose.yml up --build -d
