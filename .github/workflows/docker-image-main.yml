@@ -15,7 +15,7 @@ jobs:
         run: |
           sudo docker compose -f docker-compose.yml up --build -d
   deploy-dev:
-    if: github.ref == 'refs/heads/unstable'
+    if: github.ref != 'refs/heads/main'
     runs-on: [self-hosted, dev]
     steps:
       - uses: actions/checkout@v4
