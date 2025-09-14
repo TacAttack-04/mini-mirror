@@ -6,12 +6,7 @@ ENV MIRROR_NAME="my-aur-mirror"
 ENV UID="1000"
 ENV GID="1000"
 
-# Temporarily use public DNS for package installation to prevent docker dns errors
-RUN cp /etc/resolv.conf /etc/resolv.conf.backup && \
-    echo "nameserver 8.8.8.8" > /etc/resolv.conf && \
-    echo "nameserver 8.8.4.4" >> /etc/resolv.conf && \
-    echo "nameserver 1.1.1.1" >> /etc/resolv.conf && \
-    pacman -Syy --noconfirm && \
+RUN pacman -Syy --noconfirm && \
     pacman -S --noconfirm \
         lighttpd \
         moreutils \
@@ -19,8 +14,7 @@ RUN cp /etc/resolv.conf /etc/resolv.conf.backup && \
         git \
         sudo \
         cron \
-        && pacman -Scc --noconfirm && \
-    mv /etc/resolv.conf.backup /etc/resolv.conf
+        && pacman -Scc --noconfirm
 
 # Create a non-root user for building packages (AUR packages can't be built as root)
 RUN groupadd -g "$GID" builder && \
