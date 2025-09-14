@@ -1,0 +1,24 @@
+name: Auto Deployment
+
+on:
+  push:
+    branches:
+      - '**' # this will make it run on any push
+
+jobs:
+  deploy-main:
+    if: github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, main]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and Deploy Main
+        run: |
+          docker compose -f docker-compose.yml up --build -d
+  deploy-dev:
+    if: github.ref != 'refs/heads/main'
+    runs-on: [self-hosted, dev]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and Deploy Unstable
+        run: |
+          docker compose -f docker-compose.yml up --build -d
