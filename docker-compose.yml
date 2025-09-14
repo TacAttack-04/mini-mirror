@@ -1,15 +1,21 @@
-version: '0.1'
-
 services:
   aur-mirror:
-    build: https://github.com/tacattack-04/mini-mirror.git
+    build: 
+      context: https://github.com/TacAttack-04/mini-mirror.git
+      dockerfile: dockerfile
+      args:
+        BUILDKIT_INLINE_CACHE: 1
     container_name: aur-mirror-builder
-    network_mode: host
+    network_mode: bridge
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+      - 8.8.4.4
     user: builder
     ports:
       - "8080:8080"
     volumes:
-      - ./packages.txt:/home/builder/packages.txt:ro
+      - ./startup/packages.txt:/home/builder/packages.txt:ro
       - mirror-data:/srv/http/mirror
       - aur-cache:/tmp/aur-builds
     environment:
@@ -17,7 +23,7 @@ services:
       - MIRROR_DIR=/srv/http/mirror
       - UID=1000
       - GID=1000
-      - CRON_SCHEDLUE=0 */12 * * *
+      - CRON_SCHEDULE=0 */12 * * *
     restart: unless-stopped
     # Run the build process once, then keep lighttpd running
     command: /bin/bash -c "/home/builder/aur-build-mirror.sh && lighttpd -f /etc/lighttpd/lighttpd.conf -D"
