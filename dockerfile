@@ -51,7 +51,7 @@ EOF
 EXPOSE 8080
 
 # Copy files into builder space
-COPY ["aur-build-mirror.sh", "entrypoint.sh", "packages.txt", "identity-test.sh", "/home/builder/startup/"]
+COPY ./startup/* /home/builder/startup/
 
 # Mod all scripts so they can be used
 RUN chmod +x /home/builder/*.sh
