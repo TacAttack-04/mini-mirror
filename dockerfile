@@ -1,21 +1,10 @@
 FROM archlinux:latest
 
-# Completely reset pacman state
-RUN rm -rf /var/cache/pacman/pkg/* && \
-    rm -rf /var/lib/pacman/sync/* && \
-    echo 'Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch' > /etc/pacman.d/mirrorlist && \
-    echo 'Server = https://mirrors.kernel.org/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist && \
-    pacman -Syy
-
 # Set environment variables
 ENV MIRROR_DIR="/srv/http/mirror"
 ENV MIRROR_NAME="my-aur-mirror"
 ENV UID="1000"
 ENV GID="1000"
-
-# Replace problematic mirrors immediately
-RUN echo 'Server = https://mirrors.kernel.org/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist && \
-    echo 'Server = https://mirror.arizona.edu/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist 
 
 # Update system and install dependencies
 RUN pacman -Syy --noconfirm && \
