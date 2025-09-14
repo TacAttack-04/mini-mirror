@@ -26,8 +26,8 @@ jobs:
           docker run --rm archlinux:latest ping -c 1 8.8.8.8 || echo "docker ping failed"
       - name: Build and Deploy Main
         run: |
-          docker compose build --no-cache --force-recreate
-          docker compose up -d
+          docker compose build --no-cache
+          docker compose up -d --force recreate
   deploy-dev:
     if: github.ref != 'refs/heads/main'
     runs-on: [self-hosted, dev]
@@ -51,5 +51,5 @@ jobs:
           docker run --rm archlinux:latest ping -c 1 8.8.8.8 || echo "docker ping failed"
       - name: Build and Deploy Unstable
         run: |
-          docker compose build --no-cache --force-recreate
-          docker compose up -d
+          docker compose build --no-cache
+          docker compose up -d --force-recreate
