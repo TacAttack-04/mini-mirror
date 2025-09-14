@@ -65,7 +65,7 @@ RUN chmod +x /home/builder/startup/*.sh
 RUN chown -R builder:builder /home/builder/
 
 # Makes everything in /tmp rw able by everyone
-RUN chmod 1777 /tmp /var/run/
+RUN chmod 1777 /tmp
 
 # Switch to builder user for the build process
 USER builder
