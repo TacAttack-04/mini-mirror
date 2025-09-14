@@ -2,7 +2,7 @@ version: '0.1'
 
 services:
   aur-mirror:
-    build: https://github.com/tacattack-04/mini-mirror.git#unstable
+    build: https://github.com/tacattack-04/mini-mirror.git
     container_name: aur-mirror-builder
     network_mode: host
     user: builder
