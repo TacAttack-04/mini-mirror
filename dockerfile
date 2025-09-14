@@ -67,4 +67,4 @@ USER builder
 WORKDIR /home/builder
 
 # Default command
-ENTRYPOINT ["./startup/entrypoint.sh"]
+ENTRYPOINT ["/startup/entrypoint.sh"]
