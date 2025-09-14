@@ -6,6 +6,10 @@ ENV MIRROR_NAME="my-aur-mirror"
 ENV UID="1000"
 ENV GID="1000"
 
+# Replace problematic mirrors immediately
+RUN echo 'Server = https://mirrors.kernel.org/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist && \
+    echo 'Server = https://mirror.arizona.edu/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist 
+
 # Update system and install dependencies
 RUN pacman -Syy --noconfirm && \
     pacman -S --noconfirm \
