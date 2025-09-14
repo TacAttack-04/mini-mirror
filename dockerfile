@@ -37,20 +37,7 @@ RUN mkdir -p /var/run /var/log /home/builder/.cache/crontab && \
     chown builder:builder /etc/chrontab
 
 # Configure lighttpd
-RUN cat > /etc/lighttpd/lighttpd.conf << 'EOF'
-server.modules = ("mod_alias", "mod_dirlisting")
-server.document-root = "/srv/http/mirror"
-server.port = 8080
-server.bind = "0.0.0.0"
-dir-listing.activate = "enable"
-index-file.names = ( "index.html" )
-mimetype.assign = (
-  ".tar.xz" => "application/x-xz",
-  ".tar.gz" => "application/gzip",
-  ".pkg.tar.xz" => "application/x-xz",
-  ".pkg.tar.zst" => "application/zstd"
-)
-EOF
+COPY ./config/lighttpd.conf /etc/lighttpd/lighttpd.conf
 
 # Expose HTTP port
 EXPOSE 8080
