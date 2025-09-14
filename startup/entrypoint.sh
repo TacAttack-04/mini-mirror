@@ -5,7 +5,7 @@ echo "Running some quick checks ..."
 ./startup/identity-test.sh
 
 mkdir -p /var/run/
-chmod 755 /var/run/
+sudo chmod 755 /var/run/
 
 : "${CRON_SCHEDULE:=0 */12 * * *}"  # default to every 12 hours
 sudo echo "$CRON_SCHEDULE /startup/aur-build-mirror.sh >> /var/log/cron.log 2>&1" | crontab -
