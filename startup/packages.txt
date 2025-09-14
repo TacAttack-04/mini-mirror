@@ -1,1 +1,4 @@
 # list of packages that will be grabbed
+yay
+mc
+ttyd
