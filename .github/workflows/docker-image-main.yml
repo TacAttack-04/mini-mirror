@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Clean up previous deployment
         run: |
-          docker-compose down || true
+          docker compose down || true
           docker system prune -f
       - name: Debug DNS
         run: |
@@ -26,8 +26,8 @@ jobs:
           docker run --rm archlinux:latest ping -c 1 8.8.8.8 || echo "docker ping failed"
       - name: Build and Deploy Main
         run: |
-          docker-compose build --no-cache --force-recreate
-          docker-compose up -d
+          docker compose build --no-cache --force-recreate
+          docker compose up -d
   deploy-dev:
     if: github.ref != 'refs/heads/main'
     runs-on: [self-hosted, dev]
@@ -37,7 +37,7 @@ jobs:
           ref: unstable  # Checkout the unstable branch
       - name: Clean up previous deployment
         run: |
-          docker-compose down || true
+          docker compose down || true
           docker system prune -f
       - name: Debug DNS
         run: |
@@ -51,5 +51,5 @@ jobs:
           docker run --rm archlinux:latest ping -c 1 8.8.8.8 || echo "docker ping failed"
       - name: Build and Deploy Unstable
         run: |
-          docker-compose build --no-cache --force-recreate
-          docker-compose up -d
+          docker compose build --no-cache --force-recreate
+          docker compose up -d
