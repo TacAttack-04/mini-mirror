@@ -13,10 +13,10 @@ INTERVAL_HOURS=$(echo "$CRON_SCHEDULE" | grep -o '\*/[0-9]*' | cut -d'/' -f2)
 INTERVAL_SECONDS=$((${INTERVAL_HOURS:-12} * 3600))
 
 # Run once immediately (optional)
-/startup/aur-build-mirror.sh
+./startup/aur-build-mirror.sh
 
 # Then run in loop
 while true; do
     sleep $INTERVAL_SECONDS
-    /startup/aur-build-mirror.sh
+    ./startup/aur-build-mirror.sh
 done
