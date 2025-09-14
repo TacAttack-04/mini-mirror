@@ -9,7 +9,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./packages.txt:/home/builder/startup/packages.txt:ro
+      - ./packages.txt:/home/builder/packages.txt:ro
       - mirror-data:/srv/http/mirror
       - aur-cache:/tmp/aur-builds
     environment:
