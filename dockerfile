@@ -14,7 +14,7 @@ RUN pacman -Syu --noconfirm && \
         base-devel \
         git \
         sudo \
-        crone \
+        cron \
         && pacman -Scc --noconfirm
 
 # Create a non-root user for building packages (AUR packages can't be built as root)
