@@ -32,9 +32,10 @@ RUN mkdir -p /tmp/aur-builds && \
     chown -R builder:builder /tmp/aur-builds
 
 # Create cron directories
-RUN mkdir -p /var/run /var/log /etc && \
-    touch /var/run/crond.pid /etc/crontab && \
-    chown -R builder:builder /var/run /var/log /etc
+RUN mkdir -p /var/run /var/log && \
+    touch /var/run/crond.pid && \
+    chown -R builder:builder /var/run /var/log && \
+    chown builder:builder /etc/chrontab
 
 # Configure lighttpd
 RUN cat > /etc/lighttpd/lighttpd.conf << 'EOF'
