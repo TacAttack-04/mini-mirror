@@ -15,6 +15,7 @@ RUN pacman -Syu --noconfirm && \
         base-devel \
         git \
         sudo \
+        cronie \
         && pacman -Scc --noconfirm
 
 # Create a non-root user for building packages (AUR packages can't be built as root)
@@ -29,15 +30,6 @@ RUN mkdir -p "$MIRROR_DIR" && \
 # Create working directories
 RUN mkdir -p /tmp/aur-builds && \
     chown -R builder:builder /tmp/aur-builds
-
-# Copy the package list
-COPY packages.txt /home/builder/packages.txt
-RUN chown builder:builder /home/builder/packages.txt
-
-# Copy and modify the build script
-COPY aur-build-mirror.sh /home/builder/aur-build-mirror.sh
-RUN chown builder:builder /home/builder/aur-build-mirror.sh && \
-    chmod +x /home/builder/aur-build-mirror.sh
 
 # Configure lighttpd
 RUN cat > /etc/lighttpd/lighttpd.conf << 'EOF'
@@ -55,26 +47,24 @@ mimetype.assign = (
 )
 EOF
 
-RUN cat > /identity-test.sh << 'EOF'
-#!/bin/bash
-set -e
-echo "user: $(whoami)"
-echo "home directory: $HOME"
-ehco "working directory: $(pwd)"
-
-if [ "$EUID" -eq 0 ]; then
-    echo "ERROR: Your user is set to root it must be changed"
-    exit 1
-fi
-EOF
-
 # Expose HTTP port
 EXPOSE 8080
 
-# Switch to builder user for the build process
+# Copy files into builder space
+COPY ["aur-build-mirror.sh", "entrypoint.sh", "packages.txt", "identity-test.sh", "/home/builder/"]
+
+# Mod all scripts so they can be used
+RUN chmod +x /home/builder/*.sh
+
+# Sets ownership of everything in builder directory to builder
+RUN chown -R builder:builder /home/builder/
+
+# Makes everything in /tmp rw able by everyone
 RUN chmod 1777 /tmp
+
+# Switch to builder user for the build process
 USER builder
 WORKDIR /home/builder
 
 # Default command
-ENTRYPOINT ["./aur-build-mirror.sh"]
+ENTRYPOINT ["./entrypoint.sh"]
