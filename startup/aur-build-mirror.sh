@@ -12,6 +12,8 @@ PACKAGES_FILE="${SCRIPT_DIR}/packages.txt"
 mkdir -p "$MIRROR_DIR"
 mkdir -p /tmp/aur-builds
 
+echo "you made it to mirror"
+
 # Check if packages file exists
 if [ ! -f "$PACKAGES_FILE" ]; then
     echo "Error: packages.txt not found at $PACKAGES_FILE"
@@ -85,7 +87,5 @@ if ls *.pkg.tar.* 1> /dev/null 2>&1; then
 else
     echo "Warning: No package files found in mirror directory"
 fi
-
-chmod +x /start.sh
 
 echo "AUR mirror build process completed!"

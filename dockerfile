@@ -6,15 +6,15 @@ ENV MIRROR_NAME="my-aur-mirror"
 ENV UID="1000"
 ENV GID="1000"
 
-
 # Update system and install dependencies
-RUN pacman -Syu --noconfirm && \
+RUN pacman -Syy --noconfirm && \
     pacman -S --noconfirm \
         lighttpd \
         moreutils \
         base-devel \
         git \
         sudo \
+        cron \
         && pacman -Scc --noconfirm
 
 # Create a non-root user for building packages (AUR packages can't be built as root)
@@ -30,14 +30,11 @@ RUN mkdir -p "$MIRROR_DIR" && \
 RUN mkdir -p /tmp/aur-builds && \
     chown -R builder:builder /tmp/aur-builds
 
-# Copy the package list
-COPY packages.txt /home/builder/packages.txt
-RUN chown builder:builder /home/builder/packages.txt
-
-# Copy and modify the build script
-COPY aur-build-mirror.sh /home/builder/aur-build-mirror.sh
-RUN chown builder:builder /home/builder/aur-build-mirror.sh && \
-    chmod +x /home/builder/aur-build-mirror.sh
+# Create cron directories
+RUN mkdir -p /var/run /var/log /home/builder/.cache/crontab && \
+    touch /var/run/crond.pid /etc/chrontab && \
+    chown -R builder:builder /var/run /var/log && \
+    chown builder:builder /etc/chrontab
 
 # Configure lighttpd
 RUN cat > /etc/lighttpd/lighttpd.conf << 'EOF'
@@ -55,26 +52,24 @@ mimetype.assign = (
 )
 EOF
 
-RUN cat > /identity-test.sh << 'EOF'
-#!/bin/bash
-set -e
-echo "user: $(whoami)"
-echo "home directory: $HOME"
-ehco "working directory: $(pwd)"
-
-if [ "$EUID" -eq 0 ]; then
-    echo "ERROR: Your user is set to root it must be changed"
-    exit 1
-fi
-EOF
-
 # Expose HTTP port
 EXPOSE 8080
 
-# Switch to builder user for the build process
+# Copy files into builder space
+COPY ./startup/* /home/builder/startup/
+
+# Mod all scripts so they can be used
+RUN chmod +x /home/builder/startup/*.sh
+
+# Sets ownership of everything in builder directory to builder
+RUN chown -R builder:builder /home/builder/
+
+# Makes everything in /tmp rw able by everyone
 RUN chmod 1777 /tmp
+
+# Switch to builder user for the build process
 USER builder
 WORKDIR /home/builder
 
 # Default command
-ENTRYPOINT ["./aur-build-mirror.sh"]
+ENTRYPOINT ["./startup/entrypoint.sh"]
