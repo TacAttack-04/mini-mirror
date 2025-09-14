@@ -1,5 +1,3 @@
-version: '0.1'
-
 services:
   aur-mirror:
     build: 
@@ -22,7 +20,7 @@ services:
       - MIRROR_DIR=/srv/http/mirror
       - UID=1000
       - GID=1000
-      - CRON_SCHEDLUE=0 */12 * * *
+      - CRON_SCHEDULE=0 */12 * * *
     restart: unless-stopped
     # Run the build process once, then keep lighttpd running
     command: /bin/bash -c "/home/builder/aur-build-mirror.sh && lighttpd -f /etc/lighttpd/lighttpd.conf -D"
