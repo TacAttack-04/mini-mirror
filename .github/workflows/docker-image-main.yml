@@ -15,6 +15,14 @@ jobs:
         run: |
           docker-compose down || true
           docker system prune -f
+        run: |
+          echo "=== System DNS ==="
+          cat /etc/resolv.conf
+          echo "=== Docker daemon config ==="
+          sudo cat /etc/docker/daemon.json || echo "No daemon.json"
+          echo "=== Network test ==="
+          nslookup archlinux.org
+          docker run --rm archlinux:latest nslookup archlinux.org
       - name: Build and Deploy Main
         run: |
           docker-compose build --no-cache --force-recreate
