@@ -1,5 +1,5 @@
-# /startup/entrypoint.sh
 #!/bin/bash
+# /startup/entrypoint.sh
 
 echo "Running some quick checks ..."
 ./identity-test.sh
