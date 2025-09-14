@@ -3,11 +3,14 @@ services:
     build: 
       context: .
       dockerfile: dockerfile
+      args:
+        BUILDKIT_INLINE_CACHE: 1
     container_name: aur-mirror-builder
     network_mode: bridge
     dns:
       - 1.1.1.1
       - 8.8.8.8
+      - 8.8.4.4
     user: builder
     ports:
       - "8080:8080"
