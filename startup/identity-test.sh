@@ -1,5 +1,6 @@
-# ./startup/identity-test.sh
 #!/bin/bash
+# ./startup/identity-test.sh
+
 set -e
 echo "user: $(whoami)"
 echo "home directory: $HOME"
