@@ -34,7 +34,8 @@ RUN mkdir -p /tmp/aur-builds && \
 RUN mkdir -p /var/run /var/log && \
     touch /var/run/crond.pid /etc/chrontab && \
     chown -R builder:builder /var/run /var/log && \
-    chown builder:builder /etc/chrontab
+    chown builder:builder /etc/chrontab && \
+    chmod 755 /var/run
 
 # Configure lighttpd
 RUN cat > /etc/lighttpd/lighttpd.conf << 'EOF'
