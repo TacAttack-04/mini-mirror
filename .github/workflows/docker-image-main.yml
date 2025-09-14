@@ -18,7 +18,7 @@ jobs:
           sudo cat /etc/docker/daemon.json || echo "No daemon.json"
           dig archlinux.org || echo "dig not available"
           ping -c 1 8.8.8.8 || echo "ping failed"
-          docker run --rm archlinux:latest ping -c 1 8.8.8.8 || echo "docker ping failed"
+          sudo docker run --rm archlinux:latest ping -c 1 8.8.8.8 || echo "docker ping failed"
       - name: Clean up and deploy
         run: |
           cd ~/
@@ -26,7 +26,7 @@ jobs:
           sudo git clone -b main https://github.com/TacAttack-04/mini-mirror.git
           cd ~/mini-mirror/
           sudo docker compose build --no-cache
-          docker compose up --force-recreate
+          sudo docker compose up --force-recreate
   deploy-dev:
     if: github.ref != 'refs/heads/main'
     runs-on: [self-hosted, dev]
@@ -39,7 +39,7 @@ jobs:
           sudo cat /etc/docker/daemon.json || echo "No daemon.json"
           dig archlinux.org || echo "dig not available"
           ping -c 1 8.8.8.8 || echo "ping failed"
-          docker run --rm archlinux:latest ping -c 1 8.8.8.8 || echo "docker ping failed"
+          sudo docker run --rm archlinux:latest ping -c 1 8.8.8.8 || echo "docker ping failed"
       - name: Clean up and deploy
         run: |
           cd ~/
@@ -47,4 +47,4 @@ jobs:
           sudo git clone -b unstable https://github.com/TacAttack-04/mini-mirror.git
           cd ~/mini-mirror/
           sudo docker compose build --no-cache
-          docker compose up --force-recreate
+          sudo docker compose up --force-recreate
