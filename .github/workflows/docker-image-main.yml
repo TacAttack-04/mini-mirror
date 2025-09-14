@@ -19,6 +19,12 @@ jobs:
     runs-on: [self-hosted, dev]
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: unstable  # Checkout the unstable branch
+      - name: Clean up previous deployment
+        run: |
+          docker-compose down || true
+          docker system prune -f
       - name: Build and Deploy Unstable
         run: |
-          docker compose -f docker-compose.yml up --build
+          docker-compose up --build --no-cache -d
