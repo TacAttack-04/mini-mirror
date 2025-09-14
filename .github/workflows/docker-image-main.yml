@@ -15,6 +15,7 @@ jobs:
         run: |
           docker-compose down || true
           docker system prune -f
+      - name: Debug DNS
         run: |
           echo "=== System DNS ==="
           cat /etc/resolv.conf
@@ -38,7 +39,7 @@ jobs:
         run: |
           docker-compose down || true
           docker system prune -f
-          - name: Debug DNS
+      - name: Debug DNS
         run: |
           echo "=== System DNS ==="
           cat /etc/resolv.conf
