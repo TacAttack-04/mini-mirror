@@ -31,11 +31,10 @@ RUN mkdir -p /tmp/aur-builds && \
     chown -R builder:builder /tmp/aur-builds
 
 # Create cron directories
-RUN mkdir -p /var/run /var/log && \
+RUN mkdir -p /var/run /var/log /home/builder/.cache/crontab && \
     touch /var/run/crond.pid /etc/chrontab && \
     chown -R builder:builder /var/run /var/log && \
-    chown builder:builder /etc/chrontab && \
-    chmod 755 /var/run
+    chown builder:builder /etc/chrontab
 
 # Configure lighttpd
 RUN cat > /etc/lighttpd/lighttpd.conf << 'EOF'
@@ -66,7 +65,8 @@ RUN chmod +x /home/builder/startup/*.sh
 RUN chown -R builder:builder /home/builder/
 
 # Makes everything in /tmp rw able by everyone
-RUN chmod 1777 /tmp
+RUN chmod 1777 /tmp && \
+    chmod 1777 /var/run
 
 # Switch to builder user for the build process
 USER builder
