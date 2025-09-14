@@ -6,12 +6,12 @@ ENV MIRROR_NAME="my-aur-mirror"
 ENV UID="1000"
 ENV GID="1000"
 
-# Temporarily use public DNS for package installation
-RUN cp /etc/resolv.conf /etc/resolv.conf.backup && \ # Backsup original dns
+# Temporarily use public DNS for package installation to prevent docker dns errors
+RUN cp /etc/resolv.conf /etc/resolv.conf.backup && \
     echo "nameserver 8.8.8.8" > /etc/resolv.conf && \
     echo "nameserver 8.8.4.4" >> /etc/resolv.conf && \
     echo "nameserver 1.1.1.1" >> /etc/resolv.conf && \
-    pacman -Syy --noconfirm && \ # Update system and installs dependencies with public dns resolution for mirrors
+    pacman -Syy --noconfirm && \
     pacman -S --noconfirm \
         lighttpd \
         moreutils \
