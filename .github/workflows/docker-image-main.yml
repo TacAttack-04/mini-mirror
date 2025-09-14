@@ -21,9 +21,9 @@ jobs:
           cat /etc/resolv.conf
           echo "=== Docker daemon config ==="
           sudo cat /etc/docker/daemon.json || echo "No daemon.json"
-          echo "=== Network test ==="
-          nslookup archlinux.org
-          docker run --rm archlinux:latest nslookup archlinux.org
+          dig archlinux.org || echo "dig not available"
+          ping -c 1 8.8.8.8 || echo "ping failed"
+          docker run --rm archlinux:latest ping -c 1 8.8.8.8 || echo "docker ping failed"
       - name: Build and Deploy Main
         run: |
           docker-compose build --no-cache --force-recreate
@@ -46,8 +46,9 @@ jobs:
           echo "=== Docker daemon config ==="
           sudo cat /etc/docker/daemon.json || echo "No daemon.json"
           echo "=== Network test ==="
-          nslookup archlinux.org
-          docker run --rm archlinux:latest nslookup archlinux.org
+          dig archlinux.org || echo "dig not available"
+          ping -c 1 8.8.8.8 || echo "ping failed"
+          docker run --rm archlinux:latest ping -c 1 8.8.8.8 || echo "docker ping failed"
       - name: Build and Deploy Unstable
         run: |
           docker-compose build --no-cache --force-recreate
