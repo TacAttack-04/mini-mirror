@@ -66,7 +66,7 @@ RUN chown -R builder:builder /home/builder/
 
 # Makes everything in /tmp rw able by everyone
 RUN chmod 1777 /tmp && \
-    chmod 1777 /var/run
+    chmod 1777 /var/run/cron.pid
 
 # Switch to builder user for the build process
 USER builder
