@@ -7,7 +7,7 @@ ENV UID="1000"
 ENV GID="1000"
 
 # Update system and install dependencies
-RUN pacman -Sy --noconfirm && \
+RUN pacman -Syy --noconfirm && \
     pacman -S --noconfirm \
         lighttpd \
         moreutils \
