@@ -6,4 +6,4 @@ echo "Running some quick checks ..."
 
 : "${CRON_SCHEDULE:=0 */12 * * *}"  # default to every 12 hours
 sudo echo "$CRON_SCHEDULE /startup/aur-build-mirror.sh >> /var/log/cron.log 2>&1" | crontab -
-exec crond -n
+exec crond -n -p /tmp/crond.pid
