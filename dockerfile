@@ -11,7 +11,7 @@ RUN for i in {1..30}; do \
       ping -c1 8.8.8.8 && break || sleep 2; \
     done
 
-RUN echo 'Server = https://archive.archlinux.org/packages/core/os/x86_64/$repo/os/$arch' > /etc/pacman.d/mirrorlist && \
+RUN echo 'Server = https://archive.archlinux.org/repos/$repo/os/$arch' > /etc/pacman.d/mirrorlist && \
     echo 'Server = https://mirrors.kernel.org/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist && \
     pacman -Syy --noconfirm && \
     pacman -S --noconfirm \
@@ -20,9 +20,12 @@ RUN echo 'Server = https://archive.archlinux.org/packages/core/os/x86_64/$repo/o
         base-devel \
         git \
         sudo \
-        supercronic \
         curl \
-        && pacman -Scc --noconfirm
+        wget \
+        && pacman -Scc --noconfirm && \
+    wget https://github.com/aptible/supercronic/releases/download/v0.2.26/supercronic-linux-amd64 && \
+    chmod +x supercronic-linux-amd64 && \
+    mv supercronic-linux-amd64 /usr/local/bin/supercronic
 
 # Create a non-root user for building packages (AUR packages can't be built as root)
 RUN groupadd -g "$GID" builder && \
