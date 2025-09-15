@@ -20,7 +20,8 @@ RUN echo 'Server = https://archive.archlinux.org/packages/core/os/x86_64/$repo/o
         base-devel \
         git \
         sudo \
-        cron \
+        supercronic-bin \
+        curl \
         && pacman -Scc --noconfirm
 
 # Create a non-root user for building packages (AUR packages can't be built as root)
