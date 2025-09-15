@@ -6,7 +6,9 @@ ENV MIRROR_NAME="my-aur-mirror"
 ENV UID="1000"
 ENV GID="1000"
 
-RUN pacman -Syy --noconfirm && \
+RUN echo 'Server = https://archive.archlinux.org/packages/core/os/x86_64/$repo/os/$arch' > /etc/pacman.d/mirrorlist && \
+    echo 'Server = https://mirrors.kernel.org/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist && \
+    pacman -Syy --noconfirm && \
     pacman -S --noconfirm \
         lighttpd \
         moreutils \
