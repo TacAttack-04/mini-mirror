@@ -15,7 +15,7 @@ jobs:
           echo "=== System DNS ==="
           cat /etc/resolv.conf
           echo "=== Docker daemon config ==="
-          sudo cat /etc/docker/daemon.json || echo "No daemon.json"
+          echo "200" | sudo -S cat /etc/docker/daemon.json || echo "No daemon.json"
           dig archlinux.org || echo "dig not available"
           ping -c 1 8.8.8.8 || echo "ping failed"
           sudo docker run --rm archlinux:latest ping -c 1 8.8.8.8 || echo "docker ping failed"
@@ -36,7 +36,7 @@ jobs:
           echo "=== System DNS ==="
           cat /etc/resolv.conf
           echo "=== Docker daemon config ==="
-          sudo cat /etc/docker/daemon.json || echo "No daemon.json"
+          echo "200" | sudo -S cat /etc/docker/daemon.json || echo "No daemon.json"
           dig archlinux.org || echo "dig not available"
           ping -c 1 8.8.8.8 || echo "ping failed"
           sudo docker run --rm archlinux:latest ping -c 1 8.8.8.8 || echo "docker ping failed"
