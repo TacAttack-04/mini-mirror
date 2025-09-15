@@ -5,6 +5,7 @@ services:
       dockerfile: dockerfile
       args:
         BUILDKIT_INLINE_CACHE: 1
+      network: host
     container_name: aur-mirror-builder
     network_mode: bridge
     dns:
