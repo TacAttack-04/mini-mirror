@@ -9,4 +9,4 @@ if [ "$CRON_TESTED" != "true" ]; then
     supercronic -test /schedule.cron
     export CRON_TESTED=true
 fi
-supercronic -l info /schedule.cron
+supercronic -debug /schedule.cron
