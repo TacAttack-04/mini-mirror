@@ -6,6 +6,11 @@ ENV MIRROR_NAME="my-aur-mirror"
 ENV UID="1000"
 ENV GID="1000"
 
+# Retry loop for network (incase it has not been launched)
+RUN for i in {1..30}; do \
+      ping -c1 8.8.8.8 && break || sleep 2; \
+    done
+
 RUN echo 'Server = https://archive.archlinux.org/packages/core/os/x86_64/$repo/os/$arch' > /etc/pacman.d/mirrorlist && \
     echo 'Server = https://mirrors.kernel.org/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist && \
     pacman -Syy --noconfirm && \
