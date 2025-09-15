@@ -20,7 +20,7 @@ RUN echo 'Server = https://archive.archlinux.org/packages/core/os/x86_64/$repo/o
         base-devel \
         git \
         sudo \
-        supercronic-bin \
+        supercronic \
         curl \
         && pacman -Scc --noconfirm
 
