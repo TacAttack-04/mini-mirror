@@ -11,9 +11,7 @@ RUN for i in {1..30}; do \
       ping -c1 8.8.8.8 && break || sleep 2; \
     done
 
-RUN echo 'Server = https://archive.archlinux.org/repos/$repo/os/$arch' > /etc/pacman.d/mirrorlist && \
-    echo 'Server = https://mirrors.kernel.org/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist && \
-    pacman -Syy --noconfirm && \
+RUN pacman -Syy --noconfirm && \
     pacman -S --noconfirm \
         lighttpd \
         moreutils \
