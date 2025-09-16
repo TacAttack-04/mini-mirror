@@ -1,7 +1,7 @@
 services:
   aur-mirror:
     build: 
-      context: https://github.com/TacAttack-04/mini-mirror.git
+      context: https://github.com/TacAttack-04/mini-mirror.git#unstable
       dockerfile: dockerfile
       args:
         BUILDKIT_INLINE_CACHE: 1
