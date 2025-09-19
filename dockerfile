@@ -12,7 +12,7 @@ RUN for i in {1..30}; do \
     done
 
 RUN pacman -Syy --noconfirm && \
-    pacman -S --noconfirm \
+    pacman -S --asexplicit --noconfirm \
         lighttpd \
         moreutils \
         base-devel \
